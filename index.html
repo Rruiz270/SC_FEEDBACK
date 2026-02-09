@@ -838,60 +838,88 @@
 
             console.log('Dispositivo:', detectedDevice, '| Navegador:', browserName, '| Imagens:', uploadedImages.length);
 
-            // METODO PRINCIPAL: Usar proxy local (funciona em mobile!)
+            // METODO 1: Proxy Vercel (para mobile)
             async function enviarViaProxy() {
                 try {
                     const response = await fetch(PROXY_URL, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-                    const result = await response.json();
-                    console.log('Proxy respondeu:', result);
-                    return result.success;
+                    console.log('Proxy status:', response.status);
+                    return true;
                 } catch(e) {
                     console.log('Proxy erro:', e);
                     return false;
                 }
             }
 
-            // FALLBACK: Enviar direto para Google (funciona em desktop)
-            async function enviarDireto() {
+            // METODO 2: Fetch direto com no-cors (para desktop)
+            async function enviarFetchNoCors() {
                 try {
                     const params = new URLSearchParams();
                     params.append('data', JSON.stringify(data));
-
                     await fetch(GOOGLE_SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
                         body: params.toString()
                     });
-                    console.log('Envio direto executado');
+                    console.log('Fetch no-cors executado');
                     return true;
                 } catch(e) {
-                    console.log('Envio direto erro:', e);
+                    console.log('Fetch no-cors erro:', e);
                     return false;
                 }
             }
 
+            // METODO 3: Form via iframe (backup universal)
+            function enviarFormIframe() {
+                return new Promise((resolve) => {
+                    try {
+                        const iframeName = 'f_' + Date.now();
+                        const iframe = document.createElement('iframe');
+                        iframe.name = iframeName;
+                        iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;';
+                        document.body.appendChild(iframe);
+
+                        const formEl = document.createElement('form');
+                        formEl.method = 'POST';
+                        formEl.action = GOOGLE_SCRIPT_URL;
+                        formEl.target = iframeName;
+                        formEl.style.display = 'none';
+
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'data';
+                        input.value = JSON.stringify(data);
+                        formEl.appendChild(input);
+
+                        document.body.appendChild(formEl);
+                        formEl.submit();
+
+                        setTimeout(() => {
+                            try { formEl.remove(); iframe.remove(); } catch(x) {}
+                            console.log('Form iframe executado');
+                            resolve(true);
+                        }, 2000);
+                    } catch(e) {
+                        console.log('Form iframe erro:', e);
+                        resolve(false);
+                    }
+                });
+            }
+
             try {
-                // Tentar proxy primeiro (funciona em mobile)
-                console.log('Tentando enviar via proxy...');
-                const proxyOk = await enviarViaProxy();
+                // Executar TODOS os metodos em paralelo - pelo menos um vai funcionar!
+                console.log('Enviando via todos os metodos...');
 
-                if (proxyOk) {
-                    console.log('Sucesso via proxy!');
-                } else {
-                    // Se proxy falhar, tentar direto
-                    console.log('Proxy falhou, tentando envio direto...');
-                    await enviarDireto();
-                }
+                await Promise.allSettled([
+                    enviarViaProxy(),
+                    enviarFetchNoCors(),
+                    enviarFormIframe()
+                ]);
 
+                console.log('Envio concluido');
                 salvarDados();
                 showSuccess();
 
