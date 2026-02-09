@@ -660,6 +660,7 @@
     <script>
         // ===== CONFIGURACAO =====
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/a/macros/betteredu.com.br/s/AKfycbxIj0D3MX4EMQ9-DLsTVRiicSeuaJtgi9Lnk31QKriTioS7bo-3yGZZ4q0_OhtnvudDOw/exec';
+        const PROXY_URL = '/api/submit'; // Proxy local para mobile
         const MAX_IMAGES = 3;
         const STORAGE_KEY = 'govsc_feedback_user';
 
@@ -837,10 +838,27 @@
 
             console.log('Dispositivo:', detectedDevice, '| Navegador:', browserName, '| Imagens:', uploadedImages.length);
 
-            let enviado = false;
+            // METODO PRINCIPAL: Usar proxy local (funciona em mobile!)
+            async function enviarViaProxy() {
+                try {
+                    const response = await fetch(PROXY_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await response.json();
+                    console.log('Proxy respondeu:', result);
+                    return result.success;
+                } catch(e) {
+                    console.log('Proxy erro:', e);
+                    return false;
+                }
+            }
 
-            // METODO 1: Fetch com corpo URL encoded (mais compativel)
-            async function enviarFetchUrlEncoded() {
+            // FALLBACK: Enviar direto para Google (funciona em desktop)
+            async function enviarDireto() {
                 try {
                     const params = new URLSearchParams();
                     params.append('data', JSON.stringify(data));
@@ -853,119 +871,32 @@
                         },
                         body: params.toString()
                     });
-                    console.log('Metodo 1 (fetch urlencoded) executado');
+                    console.log('Envio direto executado');
                     return true;
                 } catch(e) {
-                    console.log('Metodo 1 erro:', e);
+                    console.log('Envio direto erro:', e);
                     return false;
                 }
-            }
-
-            // METODO 2: Fetch com FormData
-            async function enviarFetchFormData() {
-                try {
-                    const formData = new FormData();
-                    formData.append('data', JSON.stringify(data));
-
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        body: formData
-                    });
-                    console.log('Metodo 2 (fetch formdata) executado');
-                    return true;
-                } catch(e) {
-                    console.log('Metodo 2 erro:', e);
-                    return false;
-                }
-            }
-
-            // METODO 3: XMLHttpRequest (fallback)
-            function enviarXHR() {
-                return new Promise((resolve) => {
-                    try {
-                        const xhr = new XMLHttpRequest();
-                        xhr.open('POST', GOOGLE_SCRIPT_URL, true);
-                        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-                        xhr.onloadend = function() {
-                            console.log('Metodo 3 (XHR) executado');
-                            resolve(true);
-                        };
-
-                        xhr.onerror = function() {
-                            console.log('Metodo 3 (XHR) erro, mas pode ter enviado');
-                            resolve(true); // CORS pode bloquear resposta mas dados podem ter sido enviados
-                        };
-
-                        const params = new URLSearchParams();
-                        params.append('data', JSON.stringify(data));
-                        xhr.send(params.toString());
-                    } catch(e) {
-                        console.log('Metodo 3 excecao:', e);
-                        resolve(false);
-                    }
-                });
-            }
-
-            // METODO 4: Form submit via iframe (ultimo recurso)
-            function enviarFormIframe() {
-                return new Promise((resolve) => {
-                    try {
-                        const iframeName = 'f_' + Date.now();
-                        const iframe = document.createElement('iframe');
-                        iframe.name = iframeName;
-                        iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;';
-                        document.body.appendChild(iframe);
-
-                        const formEl = document.createElement('form');
-                        formEl.method = 'POST';
-                        formEl.action = GOOGLE_SCRIPT_URL;
-                        formEl.target = iframeName;
-                        formEl.enctype = 'application/x-www-form-urlencoded';
-                        formEl.style.display = 'none';
-
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = 'data';
-                        input.value = JSON.stringify(data);
-                        formEl.appendChild(input);
-
-                        document.body.appendChild(formEl);
-                        formEl.submit();
-
-                        setTimeout(() => {
-                            try { formEl.remove(); iframe.remove(); } catch(x) {}
-                            console.log('Metodo 4 (form iframe) executado');
-                            resolve(true);
-                        }, 2000);
-                    } catch(e) {
-                        console.log('Metodo 4 erro:', e);
-                        resolve(false);
-                    }
-                });
             }
 
             try {
-                // Executar todos os metodos em paralelo - pelo menos um deve funcionar
-                const resultados = await Promise.allSettled([
-                    enviarFetchUrlEncoded(),
-                    enviarFetchFormData(),
-                    enviarXHR(),
-                    enviarFormIframe()
-                ]);
+                // Tentar proxy primeiro (funciona em mobile)
+                console.log('Tentando enviar via proxy...');
+                const proxyOk = await enviarViaProxy();
 
-                console.log('Resultados:', resultados.map(r => r.status));
-
-                // Se qualquer um executou sem excecao, consideramos sucesso
-                enviado = resultados.some(r => r.status === 'fulfilled' && r.value === true);
+                if (proxyOk) {
+                    console.log('Sucesso via proxy!');
+                } else {
+                    // Se proxy falhar, tentar direto
+                    console.log('Proxy falhou, tentando envio direto...');
+                    await enviarDireto();
+                }
 
                 salvarDados();
                 showSuccess();
 
             } catch (error) {
                 console.error('Erro geral:', error);
-                // Mesmo com erro, mostrar sucesso pois algum metodo pode ter funcionado
                 salvarDados();
                 showSuccess();
             }
