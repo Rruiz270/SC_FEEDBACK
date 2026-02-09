@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - GovSC EducaIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url('https://cdn.godoydosimoveis.com.br/wp-content/uploads/2024/05/27193410/Santa-Catarina.jpeg') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            overflow-x: hidden;
+            padding: 40px 20px;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(15, 20, 35, 0.92) 0%, rgba(15, 20, 35, 0.75) 100%);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 60px;
+        }
+
+        /* Lado Esquerdo - Hero */
+        .left-content {
+            flex: 1;
+            color: white;
+            min-width: 320px;
+            padding-right: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .flag-img {
+            width: 55px;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .left-content h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .left-content p {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 520px;
+        }
+
+        .test-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(147, 201, 14, 0.2);
+            border: 1px solid rgba(147, 201, 14, 0.5);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            color: #93c90e;
+        }
+
+        /* Lado Direito - Formulário */
+        .right-content {
+            flex: 1;
+            max-width: 580px;
+            min-width: 350px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 45px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .col-half {
+            flex: 1;
+        }
+
+        .col-full {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        label {
+            font-weight: 700;
+            color: #2e2e5c;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            padding-right: 45px;
+            border: 1px solid #dcdce6;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fff;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input:hover, select:hover, textarea:hover {
+            border-color: #b0b0bb;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4-3.7%203.7-5.4%208-5.4%2013%200%205%201.8%209.3%205.4%2013l128%20128c3.7%203.7%208%205.4%2013%205.4s9.3-1.8%2013-5.4l128-128c3.7-3.7%205.4-8%205.4-13%200-5-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px top 50%;
+            background-size: 12px auto;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #93c90e;
+            box-shadow: 0 0 0 4px rgba(147, 201, 14, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 18px;
+            color: #999;
+            pointer-events: none;
+            font-size: 1rem;
+        }
+
+        .divider {
+            height: 2px;
+            background-color: #93c90e;
+            border: none;
+            margin: 25px 0;
+            width: 100%;
+            opacity: 0.8;
+        }
+
+        textarea {
+            resize: none;
+            height: 120px;
+            font-family: 'Roboto', sans-serif;
+            padding-right: 18px;
+            line-height: 1.5;
+        }
+
+        .feedback-area {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .textarea-wrapper {
+            flex: 1;
+        }
+
+        /* Upload de Imagens */
+        .upload-section {
+            width: 140px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .upload-box {
+            background-color: #f8f9fc;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+            cursor: pointer;
+            border: 2px dashed #dcdce6;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-box:hover {
+            border-color: #93c90e;
+            background-color: #f4fce3;
+        }
+
+        .upload-box input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .upload-icon {
+            font-size: 22px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .upload-text {
+            font-size: 0.7rem;
+            color: #888;
+            text-align: center;
+        }
+
+        .image-count {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        /* Preview de Imagens */
+        .images-preview {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #dcdce6;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 18px;
+            height: 18px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .preview-item:hover .remove-btn {
+            opacity: 1;
+        }
+
+        /* Botão Enviar */
+        .btn-submit {
+            width: 100%;
+            background-color: #93c90e;
+            color: white;
+            font-weight: 700;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 15px rgba(147, 201, 14, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #82b30c;
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-submit .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        .btn-submit.loading .spinner {
+            display: block;
+        }
+
+        .btn-submit.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        ::placeholder {
+            color: #b0b0b0;
+        }
+
+        /* Mensagem de Sucesso */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #93c90e 0%, #7ab30a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            color: white;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-message h2 {
+            color: #2e2e5c;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .success-message p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .new-feedback-btn {
+            padding: 14px 30px;
+            background: #93c90e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .new-feedback-btn:hover {
+            background: #82b30c;
+        }
+
+        /* Toast de Erro */
+        .error-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #ef4444;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .error-toast.active {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Welcome Message */
+        .welcome-msg {
+            background: #f4fce3;
+            color: #4a7c0f;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .welcome-msg button {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: inherit;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+                gap: 50px;
+            }
+            .left-content {
+                text-align: center;
+                padding-right: 0;
+            }
+            .logo {
+                justify-content: center;
+            }
+            .left-content p {
+                margin: 0 auto;
+            }
+            .right-content {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 15px;
+            }
+            .form-card {
+                padding: 25px 20px;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .feedback-area {
+                flex-direction: column;
+            }
+            .upload-section {
+                width: 100%;
+            }
+            .upload-box {
+                height: 80px;
+                flex-direction: row;
+                gap: 10px;
+            }
+            .left-content h1 {
+                font-size: 2.2rem;
+            }
+            .left-content p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Lado Esquerdo - Hero -->
+        <section class="left-content">
+            <div class="logo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Bandeira_de_Santa_Catarina.svg/320px-Bandeira_de_Santa_Catarina.svg.png" alt="Bandeira de Santa Catarina" class="flag-img">
+                <span>GOVSC</span>
+            </div>
+            <h1>Ajude a construir a<br>educação do futuro</h1>
+            <p>Sua experiência é fundamental para a evolução da nossa plataforma. Utilize este espaço para enviar sugestões, relatar problemas ou compartilhar ideias que tornem o nosso sistema cada vez melhor para a rede estadual.</p>
+            <div class="test-badge">
+                <i class="fa-solid fa-flask"></i>
+                <span>Período de Testes - EducaIA SC</span>
+            </div>
+        </section>
+
+        <!-- Lado Direito - Formulário -->
+        <section class="right-content">
+            <div class="form-card">
+                <form id="feedbackForm">
+                    <!-- Welcome Message (mostrado se tiver dados salvos) -->
+                    <div id="welcomeMsg" class="welcome-msg" style="display: none;">
+                        <span><i class="fa-solid fa-hand-wave"></i> Bem-vindo(a) de volta, <strong id="welcomeName"></strong>!</span>
+                        <button type="button" onclick="limparDados()">Nao sou eu</button>
+                    </div>
+
+                    <!-- Nome e Email -->
+                    <div class="form-row">
+                        <div class="col-half input-group">
+                            <label>Nome <span style="color:#ef4444">*</span></label>
+                            <div class="input-wrapper">
+                                <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
+                                <i class="fa-regular fa-user input-icon"></i>
+                            </div>
+                        </div>
+                        <div class="col-half input-group">
+                            <label>E-mail <span style="color:#ef4444">*</span></label>
+                            <div class="input-wrapper">
+                                <input type="email" id="email" name="email" placeholder="email@email.com" required>
+                                <i class="fa-regular fa-envelope input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Escola -->
+                    <div class="col-full input-group">
+                        <label>Escola / Instituicao</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="escola" name="escola" placeholder="Nome da escola (opcional)">
+                            <i class="fa-solid fa-school input-icon"></i>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <!-- Dispositivo e Navegador -->
+                    <div class="form-row">
+                        <div class="col-half input-group">
+                            <label>Dispositivo</label>
+                            <select id="dispositivo" name="dispositivo">
+                                <option value="" disabled selected hidden>Selecione</option>
+                                <option value="Desktop">Desktop</option>
+                                <option value="Mobile">Mobile</option>
+                                <option value="Tablet">Tablet</option>
+                            </select>
+                        </div>
+                        <div class="col-half input-group">
+                            <label>Navegador</label>
+                            <select id="navegador" name="navegador">
+                                <option value="" disabled selected hidden>Selecione</option>
+                                <option value="Chrome">Chrome</option>
+                                <option value="Firefox">Firefox</option>
+                                <option value="Safari">Safari</option>
+                                <option value="Edge">Edge</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Feedback + Upload -->
+                    <div class="feedback-area">
+                        <div class="textarea-wrapper input-group">
+                            <label>Detalhe seu feedback <span style="color:#ef4444">*</span></label>
+                            <textarea id="descricao" name="descricao" placeholder="Descreva o problema, sugestao ou ideia com o maximo de detalhes possivel..." required></textarea>
+                        </div>
+                        <div class="upload-section">
+                            <label>Imagens</label>
+                            <div class="upload-box" id="uploadBox">
+                                <input type="file" id="fileInput" accept="image/*" multiple>
+                                <i class="fa-solid fa-arrow-up-from-bracket upload-icon"></i>
+                                <span class="upload-text">Clique ou arraste</span>
+                            </div>
+                            <div class="image-count" id="imageCount">0/3 imagens</div>
+                            <div class="images-preview" id="imagesPreview"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="spinner"></span>
+                        <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Enviar feedback</span>
+                    </button>
+                </form>
+
+                <!-- Mensagem de Sucesso -->
+                <div class="success-message" id="successMessage">
+                    <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+                    <h2>Feedback Enviado!</h2>
+                    <p>Obrigado por contribuir com o EducaIA SC.<br>Sua mensagem foi registrada e sera analisada pela equipe.</p>
+                    <button type="button" class="new-feedback-btn" id="newFeedbackBtn">
+                        <i class="fa-solid fa-plus"></i> Enviar novo feedback
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast de Erro -->
+    <div class="error-toast" id="errorToast">
+        Erro ao enviar feedback.
+    </div>
+
+    <script>
+        // ===== CONFIGURACAO =====
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/a/macros/betteredu.com.br/s/AKfycbxIj0D3MX4EMQ9-DLsTVRiicSeuaJtgi9Lnk31QKriTioS7bo-3yGZZ4q0_OhtnvudDOw/exec';
+        const MAX_IMAGES = 3;
+        const STORAGE_KEY = 'govsc_feedback_user';
+
+        // ===== ELEMENTOS =====
+        const form = document.getElementById('feedbackForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const newFeedbackBtn = document.getElementById('newFeedbackBtn');
+        const errorToast = document.getElementById('errorToast');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBox = document.getElementById('uploadBox');
+        const imagesPreview = document.getElementById('imagesPreview');
+        const imageCount = document.getElementById('imageCount');
+        const welcomeMsg = document.getElementById('welcomeMsg');
+        const welcomeName = document.getElementById('welcomeName');
+
+        // ===== IMAGENS =====
+        let uploadedImages = [];
+
+        // ===== LOCALSTORAGE =====
+        function carregarDados() {
+            const dados = localStorage.getItem(STORAGE_KEY);
+            if (dados) {
+                const user = JSON.parse(dados);
+                document.getElementById('nome').value = user.nome || '';
+                document.getElementById('email').value = user.email || '';
+                document.getElementById('escola').value = user.escola || '';
+
+                if (user.nome) {
+                    welcomeName.textContent = user.nome.split(' ')[0];
+                    welcomeMsg.style.display = 'flex';
+                }
+            }
+        }
+
+        function salvarDados() {
+            const dados = {
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                escola: document.getElementById('escola').value
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+        }
+
+        window.limparDados = function() {
+            localStorage.removeItem(STORAGE_KEY);
+            document.getElementById('nome').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('escola').value = '';
+            welcomeMsg.style.display = 'none';
+        };
+
+        carregarDados();
+
+        // ===== UPLOAD DE IMAGENS =====
+        fileInput.addEventListener('change', function() {
+            const files = Array.from(this.files);
+
+            if (uploadedImages.length + files.length > MAX_IMAGES) {
+                showError('Maximo de ' + MAX_IMAGES + ' imagens permitido.');
+                this.value = '';
+                return;
+            }
+
+            files.forEach(file => {
+                if (file.size > 5 * 1024 * 1024) {
+                    showError('Arquivo "' + file.name + '" muito grande. Maximo 5MB.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImages.push({
+                        name: file.name,
+                        data: e.target.result,
+                        id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+                    });
+                    renderPreviews();
+                };
+                reader.readAsDataURL(file);
+            });
+
+            this.value = '';
+        });
+
+        function renderPreviews() {
+            imagesPreview.innerHTML = '';
+            imageCount.textContent = uploadedImages.length + '/' + MAX_IMAGES + ' imagens';
+
+            uploadedImages.forEach((img) => {
+                const item = document.createElement('div');
+                item.className = 'preview-item';
+                item.innerHTML = '<img src="' + img.data + '" alt="Preview">' +
+                    '<button type="button" class="remove-btn" onclick="removeImage(\'' + img.id + '\')"><i class="fa-solid fa-times"></i></button>';
+                imagesPreview.appendChild(item);
+            });
+        }
+
+        window.removeImage = function(imageId) {
+            uploadedImages = uploadedImages.filter(img => img.id !== imageId);
+            renderPreviews();
+        };
+
+        // Drag and Drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, () => {
+                uploadBox.style.borderColor = '#93c90e';
+                uploadBox.style.background = '#f4fce3';
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, () => {
+                uploadBox.style.borderColor = '#dcdce6';
+                uploadBox.style.background = '#f8f9fc';
+            });
+        });
+
+        uploadBox.addEventListener('drop', function(e) {
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // ===== ERRO =====
+        function showError(message) {
+            errorToast.textContent = message;
+            errorToast.classList.add('active');
+            setTimeout(() => {
+                errorToast.classList.remove('active');
+            }, 4000);
+        }
+
+        // ===== ENVIO =====
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const data = {
+                timestamp: new Date().toISOString(),
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                escola: document.getElementById('escola').value || 'Nao informado',
+                descricao: document.getElementById('descricao').value,
+                navegador: document.getElementById('navegador').value || 'Nao informado',
+                dispositivo: document.getElementById('dispositivo').value || 'Nao informado',
+                screenshot1: uploadedImages[0]?.data || '',
+                screenshot2: uploadedImages[1]?.data || '',
+                screenshot3: uploadedImages[2]?.data || ''
+            };
+
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            try {
+                const baseTimeout = 3000;
+                const timeoutPerImage = 5000;
+                const totalTimeout = baseTimeout + (uploadedImages.length * timeoutPerImage);
+
+                let iframe = document.getElementById('hidden_iframe');
+                if (iframe) iframe.remove();
+
+                iframe = document.createElement('iframe');
+                iframe.id = 'hidden_iframe';
+                iframe.name = 'hidden_iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+
+                let submissionHandled = false;
+
+                iframe.onload = function() {
+                    if (submissionHandled) return;
+                    submissionHandled = true;
+                    console.log('Envio concluido via iframe');
+                    salvarDados();
+                    showSuccess();
+                };
+
+                setTimeout(() => {
+                    if (submissionHandled) return;
+                    submissionHandled = true;
+                    console.log('Timeout - assumindo envio OK');
+                    salvarDados();
+                    showSuccess();
+                }, totalTimeout);
+
+                const hiddenForm = document.createElement('form');
+                hiddenForm.method = 'POST';
+                hiddenForm.action = GOOGLE_SCRIPT_URL;
+                hiddenForm.target = 'hidden_iframe';
+                hiddenForm.style.display = 'none';
+
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'data';
+                input.value = JSON.stringify(data);
+                hiddenForm.appendChild(input);
+
+                document.body.appendChild(hiddenForm);
+                console.log('Enviando com ' + uploadedImages.length + ' imagens...');
+                hiddenForm.submit();
+                document.body.removeChild(hiddenForm);
+
+            } catch (error) {
+                console.error('Erro:', error);
+                showError('Erro ao enviar feedback. Tente novamente.');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        });
+
+        function showSuccess() {
+            form.style.display = 'none';
+            successMessage.classList.add('active');
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+        }
+
+        // ===== NOVO FEEDBACK =====
+        newFeedbackBtn.addEventListener('click', function() {
+            form.reset();
+            form.style.display = 'block';
+            successMessage.classList.remove('active');
+            uploadedImages = [];
+            renderPreviews();
+            carregarDados();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
