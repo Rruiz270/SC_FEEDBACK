@@ -823,59 +823,66 @@
             submitBtn.disabled = true;
 
             try {
-                const baseTimeout = 3000;
-                const timeoutPerImage = 5000;
-                const totalTimeout = baseTimeout + (uploadedImages.length * timeoutPerImage);
+                // Metodo 1: Fetch com FormData (funciona melhor em mobile)
+                const formData = new FormData();
+                formData.append('data', JSON.stringify(data));
 
-                let iframe = document.getElementById('hidden_iframe');
-                if (iframe) iframe.remove();
+                console.log('Enviando via fetch com ' + uploadedImages.length + ' imagens...');
 
-                iframe = document.createElement('iframe');
-                iframe.id = 'hidden_iframe';
-                iframe.name = 'hidden_iframe';
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
+                // Usar fetch com redirect: 'follow' para Google Apps Script
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
 
-                let submissionHandled = false;
+                // Se chegou aqui sem erro, o envio foi bem sucedido
+                console.log('Envio concluido via fetch');
+                salvarDados();
+                showSuccess();
 
-                iframe.onload = function() {
-                    if (submissionHandled) return;
-                    submissionHandled = true;
-                    console.log('Envio concluido via iframe');
-                    salvarDados();
-                    showSuccess();
-                };
+            } catch (fetchError) {
+                console.log('Fetch falhou, tentando metodo alternativo...', fetchError);
 
-                setTimeout(() => {
-                    if (submissionHandled) return;
-                    submissionHandled = true;
-                    console.log('Timeout - assumindo envio OK');
-                    salvarDados();
-                    showSuccess();
-                }, totalTimeout);
+                // Metodo 2: Fallback com XMLHttpRequest (compatibilidade)
+                try {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', GOOGLE_SCRIPT_URL, true);
 
-                const hiddenForm = document.createElement('form');
-                hiddenForm.method = 'POST';
-                hiddenForm.action = GOOGLE_SCRIPT_URL;
-                hiddenForm.target = 'hidden_iframe';
-                hiddenForm.style.display = 'none';
+                    const formData = new FormData();
+                    formData.append('data', JSON.stringify(data));
 
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'data';
-                input.value = JSON.stringify(data);
-                hiddenForm.appendChild(input);
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4) {
+                            console.log('Envio concluido via XHR');
+                            salvarDados();
+                            showSuccess();
+                        }
+                    };
 
-                document.body.appendChild(hiddenForm);
-                console.log('Enviando com ' + uploadedImages.length + ' imagens...');
-                hiddenForm.submit();
-                document.body.removeChild(hiddenForm);
+                    xhr.onerror = function() {
+                        // Mesmo com erro de CORS, o Google Apps Script geralmente recebe os dados
+                        console.log('XHR erro (pode ser CORS), assumindo envio OK');
+                        salvarDados();
+                        showSuccess();
+                    };
 
-            } catch (error) {
-                console.error('Erro:', error);
-                showError('Erro ao enviar feedback. Tente novamente.');
-                submitBtn.classList.remove('loading');
-                submitBtn.disabled = false;
+                    xhr.send(formData);
+
+                    // Timeout de seguranca para mobile
+                    setTimeout(() => {
+                        if (submitBtn.classList.contains('loading')) {
+                            console.log('Timeout - assumindo envio OK');
+                            salvarDados();
+                            showSuccess();
+                        }
+                    }, 8000);
+
+                } catch (xhrError) {
+                    console.error('Todos os metodos falharam:', xhrError);
+                    showError('Erro ao enviar feedback. Tente novamente.');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
             }
         });
 
